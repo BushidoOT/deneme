@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Mesaha App Chrome v28</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111c33;
+      --panel2:#15233f;
+      --card:#182947;
+      --text:#eef4ff;
+      --muted:#9fb0c8;
+      --line:rgba(255,255,255,.12);
+      --green:#22c55e;
+      --red:#ef4444;
+      --amber:#f59e0b;
+      --blue:#38bdf8;
+      --shadow:0 14px 40px rgba(0,0,0,.25);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(56,189,248,.16), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(34,197,94,.14), transparent 25%),
+        linear-gradient(160deg, #0b1222 0%, #0f172a 50%, #101827 100%);
+      color:var(--text);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app{
+      min-height:100%;
+      padding:18px;
+      padding-bottom:88px;
+      max-width:1220px;
+      margin:0 auto;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .brand{display:flex;flex-direction:column;gap:2px}
+    .brand h1{margin:0;font-size:24px;line-height:1.1;letter-spacing:.2px}
+    .brand span{color:var(--muted);font-size:13px}
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.07);
+      border:1px solid var(--line);
+      color:var(--muted);
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 430px 1fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.035));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .panel-header{
+      padding:16px 16px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .panel-header h2{margin:0;font-size:17px}
+    .panel-body{padding:16px}
+    .form{display:grid;gap:13px}
+
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:7px;
+      font-weight:650;
+    }
+
+    input,select{
+      width:100%;
+      border:1px solid var(--line);
+      background:rgba(8,14,27,.72);
+      color:var(--text);
+      border-radius:14px;
+      padding:14px 14px;
+      outline:none;
+      font-size:18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    input:focus, select:focus{
+      border-color:rgba(56,189,248,.8);
+      box-shadow:0 0 0 4px rgba(56,189,248,.13);
+    }
+
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+    .measure-compact{
+      margin-top:-4px;
+      gap:8px;
+      align-items:start;
+    }
+
+    .measure-field{
+      background:rgba(255,255,255,.045);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:8px;
+    }
+
+    .measure-field label{
+      font-size:12px;
+      margin-bottom:4px;
+      color:#cfe0f5;
+    }
+
+    .measure-field input{
+      min-height:42px;
+      height:42px;
+      padding:8px 10px;
+      font-size:19px;
+      border-radius:11px;
+      font-weight:800;
+      text-align:center;
+    }
+
+    .measure-field .chip-row{
+      margin-top:6px;
+      display:flex;
+      gap:5px;
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      padding-bottom:2px;
+      scrollbar-width:none;
+    }
+
+    .measure-field .chip-row::-webkit-scrollbar{display:none}
+
+    .measure-field .chip{
+      padding:5px 8px;
+      font-size:12px;
+      border-radius:10px;
+      white-space:nowrap;
+      min-width:34px;
+      text-align:center;
+    }
+
+    .product-boxes{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+    }
+
+    .product-box,.class-box{
+      min-height:64px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.065);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+      padding:10px;
+      transition:.15s ease;
+    }
+
+    .product-box.active,.class-box.active{
+      border-color:rgba(56,189,248,.75);
+      background:linear-gradient(135deg, rgba(56,189,248,.24), rgba(34,197,94,.13));
+      box-shadow:0 0 0 4px rgba(56,189,248,.10);
+    }
+
+    .product-compact{
+      margin-top:-4px;
+      background:rgba(255,255,255,.045);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:8px;
+    }
+
+    .product-compact label{
+      font-size:12px;
+      margin-bottom:6px;
+      color:#cfe0f5;
+    }
+
+    .product-compact .product-boxes{
+      gap:6px;
+    }
+
+    .product-compact .product-box{
+      min-height:42px;
+      border-radius:12px;
+      padding:6px 5px;
+      font-size:12.5px;
+      line-height:1.1;
+    }
+
+    .product-compact .hint{
+      margin-top:6px;
+      font-size:11.5px;
+      line-height:1.25;
+    }
+
+    .tomruk-class-panel{
+      display:none;
+      border:1px solid rgba(245,158,11,.35);
+      background:rgba(245,158,11,.09);
+      border-radius:16px;
+      padding:12px;
+    }
+
+    body.product-tomruk .tomruk-class-panel{display:none !important}
+
+    .class-boxes{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+    }
+
+    .class-box{
+      min-height:48px;
+      font-size:14px;
+    }
+
+    .chip-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .chip{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.07);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 11px;
+      font-weight:700;
+      cursor:pointer;
+      user-select:none;
+      font-size:14px;
+    }
+
+    .result-box{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:linear-gradient(135deg, rgba(34,197,94,.18), rgba(56,189,248,.12));
+      border:1px solid rgba(34,197,94,.35);
+      border-radius:16px;
+      padding:14px;
+      margin-top:2px;
+    }
+
+    .result-box small{color:var(--muted);display:block;margin-bottom:3px}
+    .result-box strong{font-size:30px;line-height:1}
+
+    button{
+      border:0;
+      color:#08111f;
+      background:#e5edf8;
+      border-radius:14px;
+      padding:13px 14px;
+      font-weight:800;
+      font-size:15px;
+      cursor:pointer;
+      min-height:48px;
+    }
+
+    button.primary{background:linear-gradient(135deg, #22c55e, #86efac)}
+    button.secondary{background:linear-gradient(135deg, #38bdf8, #bae6fd)}
+    button.warning{background:linear-gradient(135deg, #f59e0b, #fde68a)}
+    button.danger{background:linear-gradient(135deg, #ef4444, #fecaca)}
+    button.ghost{
+      color:var(--text);
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
+    }
+
+    .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btn-row.single{grid-template-columns:1fr}
+
+    .edit-banner{
+      display:none;
+      padding:12px 14px;
+      border:1px solid rgba(245,158,11,.45);
+      background:rgba(245,158,11,.13);
+      border-radius:16px;
+      color:#fde68a;
+      font-weight:800;
+    }
+    body.editing .edit-banner{display:block}
+
+    .totals{
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .stat{
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      min-height:82px;
+    }
+
+    .stat small{color:var(--muted);display:block;margin-bottom:7px}
+    .stat strong{display:block;font-size:23px;line-height:1.1}
+    .stat .unit{color:var(--muted);font-size:13px;margin-top:2px}
+
+    .tools{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .tools button{
+      min-height:40px;
+      padding:9px 11px;
+      border-radius:12px;
+      font-size:13px;
+    }
+
+    .searchbar{margin-bottom:12px}
+
+    .table-wrap{
+      overflow:auto;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.12);
+      max-height:560px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:920px;
+    }
+
+    th,td{
+      padding:11px 10px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      text-align:left;
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    th{
+      position:sticky;
+      top:0;
+      background:#111c33;
+      z-index:1;
+      color:#cfe0f5;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+
+    td.num, th.num{text-align:right}
+    tr:hover td{background:rgba(255,255,255,.035)}
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding:5px 9px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .tag.tomruk{background:rgba(34,197,94,.13); color:#bbf7d0}
+    .tag.maden{background:rgba(245,158,11,.13); color:#fde68a}
+    .tag.kagit{background:rgba(56,189,248,.13); color:#bae6fd}
+
+    .mini-btn{
+      min-height:32px;
+      padding:6px 9px;
+      font-size:12px;
+      border-radius:10px;
+      color:var(--text);
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
+    }
+
+    .table-total-row td{
+      position:sticky;
+      bottom:0;
+      background:#101a30;
+      border-top:1px solid rgba(255,255,255,.18);
+      font-weight:900;
+      color:#eef4ff;
+    }
+
+    .clickable-row{cursor:pointer}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%) translateY(120px);
+      background:rgba(15,23,42,.96);
+      color:var(--text);
+      border:1px solid var(--line);
+      padding:13px 15px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      transition:.25s ease;
+      z-index:20;
+      font-weight:700;
+      max-width:calc(100% - 30px);
+      text-align:center;
+    }
+
+    .toast.show{transform:translateX(-50%) translateY(0)}
+
+    .bottom-nav{
+      display:none;
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      background:rgba(15,23,42,.92);
+      backdrop-filter: blur(16px);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:8px;
+      gap:8px;
+      z-index:10;
+      box-shadow:var(--shadow);
+    }
+
+    .bottom-nav button{
+      flex:1;
+      min-height:46px;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid transparent;
+    }
+
+    .bottom-nav button.active{
+      border-color:rgba(56,189,248,.7);
+      background:rgba(56,189,248,.18);
+    }
+
+    .hint{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      margin:10px 0 0;
+    }
+
+    .empty{
+      padding:28px 16px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    @media (max-width: 980px){
+      .app{padding:14px; padding-bottom:84px}
+      .topbar{align-items:flex-start}
+      .pill{display:none}
+      .grid{grid-template-columns:1fr}
+      .panel.records-panel{display:none}
+      body.show-records .panel.entry-panel{display:none}
+      body.show-records .panel.records-panel{display:block}
+      .bottom-nav{display:flex}
+      .totals{grid-template-columns:1fr 1fr}
+      input,select{font-size:17px}
+    }
+
+    .tomruk-class-panel{display:none !important;}
+
+    @media print{
+      body{background:#fff;color:#000}
+      .entry-panel,.tools,.bottom-nav,.searchbar,.topbar .pill{display:none!important}
+      .app{max-width:none;padding:0}
+      .panel{box-shadow:none;border:0;background:#fff;color:#000}
+      .panel-header{border-bottom:1px solid #ccc}
+      th{background:#eee;color:#000}
+      td,th{color:#000;border-color:#ddd}
+      .stat{border:1px solid #ddd;background:#fff;color:#000}
+      .tag{color:#000;background:#eee}
+    }
+  
+    /* v24 açık hava beyaz sade tema */
+    body{
+      background:#f6f8fb !important;
+      color:#172033 !important;
+    }
+
+    .app{
+      max-width:1180px;
+      padding-top:12px;
+    }
+
+    .topbar{
+      margin-bottom:10px;
+      padding:8px 4px;
+    }
+
+    .brand h1{
+      color:#111827;
+      font-size:28px;
+      font-weight:950;
+      letter-spacing:.2px;
+    }
+
+    .brand span,
+    .topbar .pill{
+      display:none !important;
+    }
+
+    .panel{
+      background:#ffffff !important;
+      border:1px solid #d7dee8 !important;
+      box-shadow:0 8px 20px rgba(16,24,40,.08) !important;
+    }
+
+    .panel-header{
+      background:#ffffff !important;
+      border-bottom:1px solid #e5eaf1 !important;
+    }
+
+    .panel-header h2,
+    label{
+      color:#172033 !important;
+    }
+
+    .pill{
+      background:#f1f5f9 !important;
+      color:#334155 !important;
+      border-color:#d7dee8 !important;
+    }
+
+    input,select{
+      background:#ffffff !important;
+      color:#111827 !important;
+      border:2px solid #cbd5e1 !important;
+      box-shadow:none !important;
+    }
+
+    input:focus, select:focus{
+      border-color:#2563eb !important;
+      box-shadow:0 0 0 4px rgba(37,99,235,.13) !important;
+    }
+
+    .hint{
+      color:#475569 !important;
+    }
+
+    .measure-field,
+    .product-compact,
+    .stat{
+      background:#ffffff !important;
+      border:1px solid #d7dee8 !important;
+      box-shadow:0 3px 10px rgba(16,24,40,.04);
+    }
+
+    .measure-field label,
+    .product-compact label{
+      color:#172033 !important;
+      font-weight:900;
+    }
+
+    .chip{
+      background:#f8fafc !important;
+      color:#111827 !important;
+      border:1px solid #cbd5e1 !important;
+    }
+
+    .chip:active{
+      background:#e2e8f0 !important;
+    }
+
+    .product-box{
+      background:#ffffff !important;
+      color:#111827 !important;
+      border:2px solid #cbd5e1 !important;
+      font-weight:950;
+    }
+
+    .product-box[data-product="Tomruk"]{
+      background:#fff7cc !important;
+      border-color:#eab308 !important;
+      color:#713f12 !important;
+    }
+
+    .product-box[data-product="Maden Direk"]{
+      background:#dbeafe !important;
+      border-color:#2563eb !important;
+      color:#1e3a8a !important;
+    }
+
+    .product-box[data-product="Kağıtlık"]{
+      background:#fee2e2 !important;
+      border-color:#dc2626 !important;
+      color:#7f1d1d !important;
+    }
+
+    .product-box.active[data-product="Tomruk"]{
+      background:#fde047 !important;
+      border-color:#a16207 !important;
+      box-shadow:0 0 0 4px rgba(234,179,8,.22) !important;
+    }
+
+    .product-box.active[data-product="Maden Direk"]{
+      background:#93c5fd !important;
+      border-color:#1d4ed8 !important;
+      box-shadow:0 0 0 4px rgba(37,99,235,.22) !important;
+    }
+
+    .product-box.active[data-product="Kağıtlık"]{
+      background:#fca5a5 !important;
+      border-color:#b91c1c !important;
+      box-shadow:0 0 0 4px rgba(220,38,38,.20) !important;
+    }
+
+    button.primary{
+      background:#16a34a !important;
+      color:#ffffff !important;
+      box-shadow:0 4px 12px rgba(22,163,74,.22);
+    }
+
+    button.secondary{
+      background:#2563eb !important;
+      color:#ffffff !important;
+    }
+
+    button.warning{
+      background:#f59e0b !important;
+      color:#111827 !important;
+    }
+
+    button.danger{
+      background:#dc2626 !important;
+      color:#ffffff !important;
+    }
+
+    button.ghost{
+      color:#172033 !important;
+      background:#f8fafc !important;
+      border:1px solid #cbd5e1 !important;
+    }
+
+    .result-box{
+      background:#f8fafc !important;
+      border:1px solid #d7dee8 !important;
+      color:#172033 !important;
+    }
+
+    .result-box small,
+    .stat small,
+    .stat .unit{
+      color:#475569 !important;
+    }
+
+    .stat strong{
+      color:#111827 !important;
+    }
+
+    .stat.tomruk-stat{
+      border-left:8px solid #eab308 !important;
+      background:#fffbea !important;
+    }
+
+    .stat.maden-stat{
+      border-left:8px solid #2563eb !important;
+      background:#eff6ff !important;
+    }
+
+    .stat.kagit-stat{
+      border-left:8px solid #dc2626 !important;
+      background:#fff1f2 !important;
+    }
+
+    .table-wrap{
+      background:#ffffff !important;
+      border:1px solid #d7dee8 !important;
+    }
+
+    th{
+      background:#f1f5f9 !important;
+      color:#111827 !important;
+      border-bottom:1px solid #cbd5e1 !important;
+    }
+
+    td{
+      color:#172033 !important;
+      border-bottom:1px solid #e5eaf1 !important;
+    }
+
+    tr:hover td{
+      background:#f8fafc !important;
+    }
+
+    .tag{
+      border:1px solid transparent !important;
+      font-weight:950;
+    }
+
+    .tag.tomruk{
+      background:#fde047 !important;
+      color:#713f12 !important;
+    }
+
+    .tag.maden{
+      background:#93c5fd !important;
+      color:#1e3a8a !important;
+    }
+
+    .tag.kagit{
+      background:#fca5a5 !important;
+      color:#7f1d1d !important;
+    }
+
+    .table-total-row td{
+      background:#f1f5f9 !important;
+      color:#111827 !important;
+    }
+
+    .empty{
+      color:#475569 !important;
+      background:#ffffff !important;
+    }
+
+    .toast{
+      background:#111827 !important;
+      color:#ffffff !important;
+      border-color:#111827 !important;
+    }
+
+    .bottom-nav{
+      background:#ffffff !important;
+      border:1px solid #cbd5e1 !important;
+    }
+
+    .bottom-nav button{
+      background:#f8fafc !important;
+      color:#172033 !important;
+      border:1px solid #cbd5e1 !important;
+    }
+
+    .bottom-nav button.active{
+      background:#2563eb !important;
+      color:#ffffff !important;
+      border-color:#2563eb !important;
+    }
+
+    @media (max-width: 980px){
+      .brand h1{
+        font-size:25px;
+      }
+      .app{
+        padding-top:8px;
+      }
+    }
+
+  
+    /* v25 seçili ürün daha belirgin */
+    .product-box{
+      position:relative;
+      transition:transform .08s ease, box-shadow .08s ease, border-color .08s ease;
+    }
+
+    .product-box.active{
+      transform:scale(1.035);
+      outline:4px solid #111827 !important;
+      outline-offset:2px;
+      font-size:14px !important;
+      letter-spacing:.2px;
+      box-shadow:0 8px 18px rgba(15,23,42,.28) !important;
+    }
+
+    .product-box.active::after{
+      content:"✓ SEÇİLİ";
+      position:absolute;
+      top:-12px;
+      right:6px;
+      background:#111827;
+      color:#ffffff;
+      border-radius:999px;
+      padding:3px 7px;
+      font-size:10px;
+      font-weight:950;
+      line-height:1;
+      box-shadow:0 3px 8px rgba(15,23,42,.22);
+    }
+
+    .product-box.active[data-product="Tomruk"]{
+      background:#facc15 !important;
+      color:#422006 !important;
+      border-color:#854d0e !important;
+    }
+
+    .product-box.active[data-product="Maden Direk"]{
+      background:#60a5fa !important;
+      color:#082f49 !important;
+      border-color:#1e40af !important;
+    }
+
+    .product-box.active[data-product="Kağıtlık"]{
+      background:#f87171 !important;
+      color:#450a0a !important;
+      border-color:#991b1b !important;
+    }
+
+    .toast.success-toast{
+      background:#166534 !important;
+      color:#ffffff !important;
+      border:2px solid #14532d !important;
+      font-size:16px !important;
+      font-weight:900 !important;
+      padding:14px 18px !important;
+      box-shadow:0 10px 26px rgba(22,101,52,.35) !important;
+    }
+
+    .toast.error-toast{
+      background:#991b1b !important;
+      color:#ffffff !important;
+      border:2px solid #7f1d1d !important;
+      font-size:16px !important;
+      font-weight:950 !important;
+      padding:14px 18px !important;
+      box-shadow:0 10px 26px rgba(153,27,27,.35) !important;
+    }
+
+  
+    /* v26: Uyarılar klavyenin altında kalmasın diye üstte gösterilir */
+    .toast{
+      position:fixed !important;
+      top:calc(env(safe-area-inset-top, 0px) + 12px) !important;
+      bottom:auto !important;
+      left:50% !important;
+      right:auto !important;
+      width:calc(100% - 24px) !important;
+      max-width:560px !important;
+      text-align:center !important;
+      transform:translateX(-50%) translateY(-130%) !important;
+      z-index:999999 !important;
+      border-radius:16px !important;
+      pointer-events:none !important;
+    }
+
+    .toast.show,
+    .toast.visible,
+    .toast.active{
+      transform:translateX(-50%) translateY(0) !important;
+    }
+
+    .toast.success-toast,
+    .toast.error-toast{
+      top:calc(env(safe-area-inset-top, 0px) + 12px) !important;
+      bottom:auto !important;
+      min-height:48px !important;
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+    }
+
+  
+    /* v27: Uyarı barı takılı kalmasın - sadece show class varken görünür */
+    .toast{
+      position:fixed !important;
+      top:calc(env(safe-area-inset-top, 0px) + 12px) !important;
+      bottom:auto !important;
+      left:50% !important;
+      right:auto !important;
+      width:calc(100% - 24px) !important;
+      max-width:560px !important;
+      min-height:48px !important;
+      text-align:center !important;
+      transform:translateX(-50%) translateY(-150%) !important;
+      opacity:0 !important;
+      visibility:hidden !important;
+      display:none !important;
+      z-index:999999 !important;
+      border-radius:16px !important;
+      pointer-events:none !important;
+      align-items:center !important;
+      justify-content:center !important;
+      transition:transform .22s ease, opacity .18s ease, visibility .18s ease !important;
+    }
+
+    .toast.show{
+      display:flex !important;
+      transform:translateX(-50%) translateY(0) !important;
+      opacity:1 !important;
+      visibility:visible !important;
+    }
+
+    .toast.success-toast{
+      background:#166534 !important;
+      color:#ffffff !important;
+      border:2px solid #14532d !important;
+      font-size:16px !important;
+      font-weight:900 !important;
+      padding:14px 18px !important;
+      box-shadow:0 10px 26px rgba(22,101,52,.35) !important;
+    }
+
+    .toast.error-toast{
+      background:#991b1b !important;
+      color:#ffffff !important;
+      border:2px solid #7f1d1d !important;
+      font-size:16px !important;
+      font-weight:950 !important;
+      padding:14px 18px !important;
+      box-shadow:0 10px 26px rgba(153,27,27,.35) !important;
+    }
+
+  </style>
+</head>
+<body class="product-tomruk">
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1>Mesaha App</h1>
+        
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel entry-panel">
+        <div class="panel-header">
+          <h2>Yeni Kayıt</h2>
+          <span class="pill" style="display:inline-flex">Karaçam</span>
+        </div>
+        <div class="panel-body">
+          <form id="entryForm" class="form" autocomplete="off">
+            <div id="editBanner" class="edit-banner">Düzenleme modu açık. Kaydet dediğinde seçili kayıt güncellenecek.</div>
+
+            <div>
+              <label for="barcode">Barkod No</label>
+              <input id="barcode" name="barcode" placeholder="Örn: A102682" inputmode="text" />
+              <p class="hint">Kaydetten sonra barkod otomatik bir sonraki sıraya geçer. Barkod en az 9 karakter olmalı. Örn: A17265597</p>
+            </div>
+
+            <div class="btn-row single">
+              <button id="submitBtn" class="primary" type="submit">Kaydet ve Sonraki Barkoda Geç</button>
+            </div>
+
+            <div class="product-compact">
+              <label>Ürün Türü</label>
+              <input id="productType" name="productType" type="hidden" value="Tomruk" />
+              <input id="qualityClass" name="qualityClass" type="hidden" value="" />
+              <div id="productBoxes" class="product-boxes">
+                <div class="product-box active" data-product="Tomruk">Tomruk</div>
+                <div class="product-box" data-product="Maden Direk">Maden</div>
+                <div class="product-box" data-product="Kağıtlık">Kağıtlık</div>
+              </div>
+              <p class="hint">Seçili ürün ✓ ile görünür. Tomruk 21+, Maden 20 ve altı.</p>
+            </div>
+
+            <div class="row measure-compact">
+              <div class="measure-field">
+                <label for="length">Boy</label>
+                <input id="length" name="length" type="number" min="0" step="0.01" placeholder="3" inputmode="decimal" />
+                <div id="lengthChips" class="chip-row"></div>
+              </div>
+              <div class="measure-field">
+                <label for="diameter">Çap</label>
+                <input id="diameter" name="diameter" type="number" min="0" step="1" placeholder="22" inputmode="numeric" />
+                <div id="diameterChips" class="chip-row"></div>
+              </div>
+            </div>
+
+            <div id="tomrukClassPanel" class="tomruk-class-panel">
+              <label>Tomruk Kalite Sınıfı</label>
+              <div id="classBoxes" class="class-boxes">
+                <div class="class-box" data-class="1">1. Sınıf</div>
+                <div class="class-box active" data-class="2">2. Sınıf</div>
+                <div class="class-box" data-class="3">3. Sınıf</div>
+              </div>
+              <p class="hint">Tomrukta kalite sınıfı Excel’e gider. Maden ve kağıtlıkta boş bırakılır.</p>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="productionDate">Üretim Tarihi</label>
+                <input id="productionDate" name="productionDate" type="date" />
+              </div>
+              <div>
+                <label for="quantity">Adet</label>
+                <input id="quantity" name="quantity" type="number" min="1" step="1" value="1" inputmode="numeric" />
+              </div>
+            </div>
+
+            <div class="result-box">
+              <div>
+                <small>Otomatik Hacim</small>
+                <strong id="liveDesi">0</strong>
+              </div>
+              <div style="text-align:right">
+                <small>Sistem karşılığı</small>
+                <strong id="liveHacim" style="font-size:20px">0</strong>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="secondary" type="button" id="sameBarcodeBtn">Aynı Barkoda Ürün Ekle</button>
+              <button class="ghost" type="button" id="clearInputsBtn">Alanları Temizle</button>
+            </div>
+            <div class="btn-row single">
+              <button class="ghost" type="button" id="soundToggleBtn">Ses: Açık</button>
+            </div>
+            <div class="btn-row single">
+              <button class="warning" type="button" id="cancelEditBtn" style="display:none">Düzenlemeyi İptal Et</button>
+            </div>
+
+            <p class="hint">
+              Desi = 0.00007854 × çap² × boy × 1000 × adet. Sistem Excel’inde hacim <b>m³</b> olarak gider.
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <section class="panel records-panel">
+        <div class="panel-header">
+          <h2>Kayıtlar ve Sistem Çıktısı</h2>
+          <span id="recordCount" class="pill" style="display:inline-flex">0 kayıt</span>
+        </div>
+        <div class="panel-body">
+          <div class="totals">
+            <div class="stat">
+              <small>Genel Hacim</small>
+              <strong id="totalDesi">0</strong>
+              <div class="unit">desi</div>
+            </div>
+            <div class="stat">
+              <small>Toplam Adet</small>
+              <strong id="totalAdet">0</strong>
+              <div class="unit">adet</div>
+            </div>
+            <div class="stat tomruk-stat">
+              <small>Tomruk</small>
+              <strong id="totalTomruk">0</strong>
+              <div class="unit" id="totalTomrukAdet">0 adet</div>
+            </div>
+            <div class="stat maden-stat">
+              <small>Maden Direği</small>
+              <strong id="totalMaden">0</strong>
+              <div class="unit" id="totalMadenAdet">0 adet</div>
+            </div>
+            <div class="stat kagit-stat">
+              <small>Kağıtlık</small>
+              <strong id="totalKagit">0</strong>
+              <div class="unit" id="totalKagitAdet">0 adet</div>
+            </div>
+          </div>
+
+          <div class="tools">
+            <button type="button" class="primary" id="exportSystemXlsBtn">Sistem Örnek Formatı (.xls)</button>
+            <button type="button" class="ghost" id="backupBtn">Yedek Al</button>
+            <button type="button" class="ghost" id="restoreBtn">Yedek Yükle</button>
+            <button type="button" class="warning" id="printBtn">Yazdır</button>
+            <button type="button" class="danger" id="deleteAllBtn">Tümünü Sil</button>
+            <input id="restoreInput" type="file" accept=".json,application/json" style="display:none" />
+          </div>
+
+          <div class="searchbar">
+            <input id="searchInput" placeholder="Barkod, ürün, sınıf, çap veya boy ara..." />
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sıra</th>
+                  <th>Barkod</th>
+                  <th>Ürün</th>
+                  <th class="num">Boy</th>
+                  <th class="num">Çap</th>
+                  <th class="num">Adet</th>
+                  <th class="num">Desi</th>
+                  <th class="num">m³</th>
+                  <th>Tarih</th>
+                  <th>İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="recordsBody"></tbody>
+              <tfoot id="recordsFoot"></tfoot>
+            </table>
+            <div id="emptyState" class="empty">Henüz kayıt yok. İlk barkodu girip kaydet.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav">
+    <button id="navEntry" class="active" type="button">Yeni Kayıt</button>
+    <button id="navRecords" type="button">Kayıtlar</button>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "cam_mesaha_kayitlari_v1";
+    const SETTINGS_KEY = "cam_mesaha_ayarlar_v1";
+
+    const HEADERS = [
+      "agacId","agacAdi","odunId","odunAdi","kaliteSinifi","boySinifi",
+      "adet","cap","boy","hacim","uretimTarihi","barkodNo"
+    ];
+
+    const PRODUCT_MAP = {
+      "Tomruk": { odunId: 1, odunAdi: "Tomruk" },
+      "Maden Direk": { odunId: 3, odunAdi: "Maden Direği" },
+      "Kağıtlık": { odunId: 5, odunAdi: "Kağıtlık Odun" }
+    };
+
+    const state = {
+      records: [],
+      sameBarcodeMode: false,
+      editingId: null,
+      settings: {
+        lastBarcode: "A102682",
+        lastProductType: "Tomruk",
+        lastQualityClass: "2",
+        lastLength: "3",
+        lastQuantity: "1",
+        productionDate: "",
+        recentLengths: ["3"],
+        recentDiameters: ["22"],
+        soundEnabled: true
+      }
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const els = {
+      form: $("entryForm"),
+      submitBtn: $("submitBtn"),
+      barcode: $("barcode"),
+      productionDate: $("productionDate"),
+      productType: $("productType"),
+      qualityClass: $("qualityClass"),
+      productBoxes: $("productBoxes"),
+      classBoxes: $("classBoxes"),
+      length: $("length"),
+      diameter: $("diameter"),
+      quantity: $("quantity"),
+      liveDesi: $("liveDesi"),
+      liveHacim: $("liveHacim"),
+      recordsBody: $("recordsBody"),
+      recordsFoot: $("recordsFoot"),
+      emptyState: $("emptyState"),
+      recordCount: $("recordCount"),
+      totalDesi: $("totalDesi"),
+      totalAdet: $("totalAdet"),
+      totalTomruk: $("totalTomruk"),
+      totalTomrukAdet: $("totalTomrukAdet"),
+      totalMaden: $("totalMaden"),
+      totalMadenAdet: $("totalMadenAdet"),
+      totalKagit: $("totalKagit"),
+      totalKagitAdet: $("totalKagitAdet"),
+      searchInput: $("searchInput"),
+      toast: $("toast"),
+      sameBarcodeBtn: $("sameBarcodeBtn"),
+      clearInputsBtn: $("clearInputsBtn"),
+      soundToggleBtn: $("soundToggleBtn"),
+      cancelEditBtn: $("cancelEditBtn"),
+      exportSystemXlsBtn: $("exportSystemXlsBtn"),
+      backupBtn: $("backupBtn"),
+      restoreBtn: $("restoreBtn"),
+      restoreInput: $("restoreInput"),
+      printBtn: $("printBtn"),
+      deleteAllBtn: $("deleteAllBtn"),
+      navEntry: $("navEntry"),
+      navRecords: $("navRecords"),
+      lengthChips: $("lengthChips"),
+      diameterChips: $("diameterChips")
+    };
+
+    function todayISO() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    }
+
+
+    function normalizeRecentValue(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n) || n <= 0) return "";
+      return String(n).replace(",", ".");
+    }
+
+    function addRecentValue(listName, value) {
+      const normalized = normalizeRecentValue(value);
+      if (!normalized) return;
+      const current = Array.isArray(state.settings[listName]) ? state.settings[listName] : [];
+      state.settings[listName] = [normalized, ...current.filter(v => String(v) !== normalized)].slice(0, 5);
+    }
+
+    function renderRecentChips() {
+      const lengths = Array.isArray(state.settings.recentLengths) ? state.settings.recentLengths : [];
+      const diameters = Array.isArray(state.settings.recentDiameters) ? state.settings.recentDiameters : [];
+
+      els.lengthChips.innerHTML = lengths.length
+        ? lengths.map(v => `<span class="chip" data-len="${escapeHtml(v)}">${escapeHtml(v)}</span>`).join("")
+        : `<span class="hint">Henüz kayıt yok</span>`;
+
+      els.diameterChips.innerHTML = diameters.length
+        ? diameters.map(v => `<span class="chip" data-dia="${escapeHtml(v)}">${escapeHtml(v)}</span>`).join("")
+        : `<span class="hint">Henüz kayıt yok</span>`;
+
+      els.lengthChips.querySelectorAll("[data-len]").forEach(chip => {
+        chip.addEventListener("pointerdown", (event) => event.preventDefault());
+        chip.addEventListener("click", () => {
+          els.length.value = chip.dataset.len;
+          saveSettings();
+          updateLiveDesi();
+        });
+      });
+
+      els.diameterChips.querySelectorAll("[data-dia]").forEach(chip => {
+        chip.addEventListener("pointerdown", (event) => event.preventDefault());
+        chip.addEventListener("click", () => {
+          els.diameter.value = chip.dataset.dia;
+          updateLiveDesi();
+          focusDiameterKeepKeyboard();
+        });
+      });
+    }
+
+    function isoToTRDate(iso) {
+      if (!iso) return "";
+      const parts = String(iso).split("-");
+      if (parts.length !== 3) return iso;
+      return `${parts[2]}.${parts[1]}.${parts[0]}`;
+    }
+
+    function trDateToISO(tr) {
+      if (!tr) return todayISO();
+      const parts = String(tr).split(".");
+      if (parts.length !== 3) return todayISO();
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+
+    function load() {
+      try {
+        state.records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch {
+        state.records = [];
+      }
+
+      try {
+        state.settings = { ...state.settings, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") };
+      } catch {}
+
+      if (!state.settings.productionDate) state.settings.productionDate = todayISO();
+
+      els.barcode.value = state.settings.lastBarcode || "A102682";
+      els.productionDate.value = state.settings.productionDate || todayISO();
+      els.length.value = state.settings.lastLength || "3";
+      els.quantity.value = state.settings.lastQuantity || "1";
+      setProductType(state.settings.lastProductType || "Tomruk", false);
+      setQualityClass("", false);
+
+      renderRecentChips();
+      updateLiveDesi();
+      render();
+      updateSoundButton();
+      focusDiameterKeepKeyboard();
+    }
+
+    function saveRecords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.records));
+    }
+
+    function saveSettings() {
+      state.settings.lastBarcode = els.barcode.value.trim();
+      state.settings.productionDate = els.productionDate.value || todayISO();
+      state.settings.lastProductType = els.productType.value;
+      state.settings.lastQualityClass = "";
+      state.settings.lastLength = els.length.value;
+      state.settings.lastQuantity = els.quantity.value || "1";
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+    }
+
+    function calculateDesi(diameter, length, quantity = 1) {
+      const d = Number(diameter);
+      const l = Number(length);
+      const q = Number(quantity || 1);
+      if (!d || !l || !q) return 0;
+      return Math.round(0.00007854 * d * d * l * 1000 * q);
+    }
+
+    function validateBarcode(value) {
+      const barcode = String(value || "").trim();
+
+      if (barcode.length < 9) {
+        showErrorToast("Barkod en az 9 karakter olmalı. Örn: A17265597");
+        try { els.barcode.focus({ preventScroll: true }); } catch { els.barcode.focus(); }
+        return false;
+      }
+
+      return true;
+    }
+
+    function validateDiameterByProduct(productType, diameter) {
+      const d = Number(diameter);
+      if (productType === "Tomruk" && d < 21) {
+        showErrorToast("Tomruk 21 çapından küçük olmaz.");
+        focusDiameterKeepKeyboard();
+        return false;
+      }
+      if (productType === "Maden Direk" && d > 20) {
+        showErrorToast("Maden direği 20 çapından büyük olmaz.");
+        focusDiameterKeepKeyboard();
+        return false;
+      }
+      return true;
+    }
+
+    function formatHacimFromDesi(desi) {
+      const value = (Number(desi) || 0) / 1000;
+      return value.toFixed(3).replace(/0+$/, "").replace(/\.$/, "");
+    }
+
+    function formatBoy(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return "";
+      if (Number.isInteger(n * 10)) return n.toFixed(1);
+      return String(n);
+    }
+
+    function incrementBarcode(value) {
+      const raw = String(value || "").trim();
+      const match = raw.match(/^(.*?)(\d+)$/);
+      if (!match) return raw;
+      const prefix = match[1];
+      const numText = match[2];
+      const nextNumber = String(Number(numText) + 1);
+      return prefix + nextNumber.padStart(numText.length, "0");
+    }
+
+    function normalizeProductClass(type) {
+      if (type === "Tomruk") return "tomruk";
+      if (type === "Maden Direk") return "maden";
+      return "kagit";
+    }
+
+    function formatDateTime(date = new Date()) {
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
+
+    function showToast(message) {
+      if (!els.toast) return;
+
+      els.toast.textContent = message;
+      els.toast.classList.remove("show");
+      clearTimeout(showToast.timer);
+      clearTimeout(showToast.cleaner);
+
+      // Reflow ile tekrar gösterimde animasyon düzgün çalışır.
+      void els.toast.offsetWidth;
+
+      els.toast.classList.add("show");
+
+      showToast.timer = setTimeout(() => {
+        els.toast.classList.remove("show");
+        showToast.cleaner = setTimeout(() => {
+          els.toast.classList.remove("success-toast", "error-toast", "visible", "active");
+          els.toast.textContent = "";
+        }, 260);
+      }, 2200);
+    }
+
+    function focusDiameterKeepKeyboard() {
+      // Mobilde kaydet butonuna basınca klavyenin kapanmaması için
+      // tekrar çap alanına odaklanır. Android tarayıcılarda mümkün olduğunca klavyeyi açık tutar.
+      requestAnimationFrame(() => {
+        els.diameter.focus({ preventScroll: true });
+        const len = String(els.diameter.value || "").length;
+        try { els.diameter.setSelectionRange(len, len); } catch {}
+      });
+      setTimeout(() => {
+        els.diameter.focus({ preventScroll: true });
+      }, 80);
+      setTimeout(() => {
+        els.diameter.focus({ preventScroll: true });
+      }, 180);
+    }
+
+    function updateSoundButton() {
+      if (!els.soundToggleBtn) return;
+      els.soundToggleBtn.textContent = state.settings.soundEnabled === false ? "Ses: Kapalı" : "Ses: Açık";
+    }
+
+    function playSuccessSound() {
+      if (state.settings.soundEnabled === false) return;
+
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+
+        const ctx = playSuccessSound.ctx || new AudioContext();
+        playSuccessSound.ctx = ctx;
+
+        if (ctx.state === "suspended") {
+          ctx.resume();
+        }
+
+        const now = ctx.currentTime;
+
+        // Market barkod okuyucu tarzı: kısa, net, tok tek bip.
+        // Bir ana kare dalga + hafif yüksek harmonik ile daha belirgin duyulur.
+        const master = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        const oscMain = ctx.createOscillator();
+        const oscSharp = ctx.createOscillator();
+        const gainMain = ctx.createGain();
+        const gainSharp = ctx.createGain();
+
+        filter.type = "bandpass";
+        filter.frequency.setValueAtTime(2050, now);
+        filter.Q.setValueAtTime(3.8, now);
+
+        master.connect(ctx.destination);
+        filter.connect(master);
+
+        // Genel ses zarfı: hızlı gir, kısa ve temiz çık.
+        master.gain.setValueAtTime(0.0001, now);
+        master.gain.exponentialRampToValueAtTime(0.95, now + 0.008);
+        master.gain.exponentialRampToValueAtTime(0.0001, now + 0.135);
+
+        oscMain.type = "square";
+        oscMain.frequency.setValueAtTime(1900, now);
+        oscMain.frequency.exponentialRampToValueAtTime(1780, now + 0.12);
+
+        oscSharp.type = "triangle";
+        oscSharp.frequency.setValueAtTime(2650, now);
+        oscSharp.frequency.exponentialRampToValueAtTime(2450, now + 0.10);
+
+        gainMain.gain.setValueAtTime(0.9, now);
+        gainSharp.gain.setValueAtTime(0.28, now);
+
+        oscMain.connect(gainMain);
+        oscSharp.connect(gainSharp);
+        gainMain.connect(filter);
+        gainSharp.connect(filter);
+
+        oscMain.start(now);
+        oscSharp.start(now);
+        oscMain.stop(now + 0.14);
+        oscSharp.stop(now + 0.11);
+
+        // Barkod okundu hissi için çok kısa titreşim.
+        if (navigator.vibrate) {
+          navigator.vibrate(35);
+        }
+      } catch (err) {
+        // Ses desteklenmezse program normal çalışmaya devam eder.
+      }
+    }
+
+    function toggleSound() {
+      state.settings.soundEnabled = !(state.settings.soundEnabled !== false);
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+      updateSoundButton();
+
+      if (state.settings.soundEnabled !== false) {
+        playSuccessSound();
+        showToast("Onay sesi açıldı.");
+      } else {
+        showToast("Onay sesi kapatıldı.");
+      }
+    }
+
+    function showSuccessToast(message) {
+      if (els.toast) {
+        els.toast.classList.remove("error-toast");
+        els.toast.classList.add("success-toast");
+      }
+      showToast(message);
+    }
+
+    function showErrorToast(message) {
+      if (els.toast) {
+        els.toast.classList.remove("success-toast");
+        els.toast.classList.add("error-toast");
+      }
+      showToast(message);
+    }
+
+    function productDisplayName(type) {
+      if (type === "Maden Direk") return "maden direği";
+      if (type === "Kağıtlık") return "kağıtlık";
+      return "tomruk";
+    }
+
+    function formatShortNumber(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return String(value || "");
+      return Number.isInteger(n) ? String(n) : String(n).replace(".", ",");
+    }
+
+    function setProductType(type, persist = true) {
+      els.productType.value = type;
+      document.body.classList.toggle("product-tomruk", type === "Tomruk");
+      els.productBoxes.querySelectorAll(".product-box").forEach(box => {
+        box.classList.toggle("active", box.dataset.product === type);
+      });
+
+      const d = Number(els.diameter.value || 0);
+      if (d) {
+        if (type === "Tomruk" && d < 21) showErrorToast("Tomruk 21 çapından küçük olmaz.");
+        if (type === "Maden Direk" && d > 20) showErrorToast("Maden direği 20 çapından büyük olmaz.");
+      }
+
+      if (persist) saveSettings();
+      focusDiameterKeepKeyboard();
+    }
+
+    function setQualityClass(cls, persist = true) {
+      els.qualityClass.value = cls || "2";
+      els.classBoxes.querySelectorAll(".class-box").forEach(box => {
+        box.classList.toggle("active", box.dataset.class === els.qualityClass.value);
+      });
+      if (persist) saveSettings();
+    }
+
+    function setEditMode(recordId) {
+      state.editingId = recordId;
+      const active = Boolean(recordId);
+      document.body.classList.toggle("editing", active);
+      els.cancelEditBtn.style.display = active ? "block" : "none";
+      els.submitBtn.textContent = active ? "Kaydı Güncelle" : "Kaydet ve Sonraki Barkoda Geç";
+      if (active) showToast("Kayıt düzenleme için açıldı.");
+    }
+
+    function cancelEditMode() {
+      state.editingId = null;
+      document.body.classList.remove("editing");
+      els.cancelEditBtn.style.display = "none";
+      els.submitBtn.textContent = "Kaydet ve Sonraki Barkoda Geç";
+      els.diameter.value = "";
+      els.quantity.value = "1";
+      updateLiveDesi();
+      focusDiameterKeepKeyboard();
+    }
+
+    function updateLiveDesi() {
+      const desi = calculateDesi(els.diameter.value, els.length.value, els.quantity.value);
+      els.liveDesi.textContent = desi.toLocaleString("tr-TR") + " desi";
+      els.liveHacim.textContent = formatHacimFromDesi(desi) + " m³";
+    }
+
+    function recordToSystemRow(record) {
+      const product = PRODUCT_MAP[record.productType] || PRODUCT_MAP["Tomruk"];
+      const kalite = "";
+      const desi = Number(record.desi) || calculateDesi(record.diameter, record.length, record.quantity);
+      return {
+        agacId: 1,
+        agacAdi: "Karaçam",
+        odunId: product.odunId,
+        odunAdi: product.odunAdi,
+        kaliteSinifi: kalite,
+        boySinifi: "",
+        adet: Number(record.quantity || 1),
+        cap: Number(record.diameter || 0),
+        boy: formatBoy(record.length),
+        hacim: formatHacimFromDesi(desi),
+        uretimTarihi: record.uretimTarihi || isoToTRDate(record.productionDate) || isoToTRDate(todayISO()),
+        barkodNo: record.barcode || ""
+      };
+    }
+
+    function addRecord(event) {
+      event.preventDefault();
+
+      const barcode = els.barcode.value.trim();
+      const productType = els.productType.value;
+      const qualityClass = els.qualityClass.value || "2";
+      const productionDate = els.productionDate.value || todayISO();
+      const length = Number(els.length.value);
+      const diameter = Number(els.diameter.value);
+      const quantity = Number(els.quantity.value || 1);
+
+      if (!barcode) return showErrorToast("Barkod boş olamaz.");
+      if (!validateBarcode(barcode)) return;
+      if (!productionDate) return showErrorToast("Üretim tarihi gir.");
+      if (!length || length <= 0) {
+        showErrorToast("Boy bilgisi gir.");
+        focusDiameterKeepKeyboard();
+        return;
+      }
+      if (!diameter || diameter <= 0) {
+        focusDiameterKeepKeyboard();
+        return;
+      }
+      if (!quantity || quantity <= 0) {
+        showErrorToast("Adet en az 1 olmalı.");
+        focusDiameterKeepKeyboard();
+        return;
+      }
+      if (!validateDiameterByProduct(productType, diameter)) return;
+
+      const desi = calculateDesi(diameter, length, quantity);
+
+      if (state.editingId) {
+        const rec = state.records.find(r => r.id === state.editingId);
+        if (!rec) {
+          cancelEditMode();
+          return showErrorToast("Düzenlenecek kayıt bulunamadı.");
+        }
+
+        rec.barcode = barcode;
+        rec.species = "Karaçam";
+        rec.productType = productType;
+        rec.qualityClass = "";
+        rec.productionDate = productionDate;
+        rec.uretimTarihi = isoToTRDate(productionDate);
+        rec.length = length;
+        rec.diameter = diameter;
+        rec.quantity = quantity;
+        rec.desi = desi;
+        rec.hacim = formatHacimFromDesi(desi);
+        rec.updatedAt = formatDateTime();
+
+        addRecentValue("recentLengths", length);
+        addRecentValue("recentDiameters", diameter);
+        renderRecentChips();
+
+        saveRecords();
+        saveSettings();
+        render();
+        playSuccessSound();
+        showSuccessToast(`${formatShortNumber(diameter)} çap ${formatShortNumber(length)} boy ${productDisplayName(productType)} güncellendi`);
+        cancelEditMode();
+        return;
+      }
+
+      const record = {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+        barcode,
+        species: "Karaçam",
+        productType,
+        qualityClass: "",
+        productionDate,
+        uretimTarihi: isoToTRDate(productionDate),
+        length,
+        diameter,
+        quantity,
+        desi,
+        hacim: formatHacimFromDesi(desi),
+        createdAt: formatDateTime()
+      };
+
+      state.records.unshift(record);
+
+      addRecentValue("recentLengths", length);
+      addRecentValue("recentDiameters", diameter);
+      renderRecentChips();
+
+      saveRecords();
+
+      saveSettings();
+
+      if (!state.sameBarcodeMode) {
+        els.barcode.value = incrementBarcode(barcode);
+      }
+
+      els.diameter.value = "";
+      els.quantity.value = "1";
+
+      saveSettings();
+      updateLiveDesi();
+      render();
+
+      playSuccessSound();
+      showSuccessToast(`${formatShortNumber(diameter)} çap ${formatShortNumber(length)} boy ${productDisplayName(productType)} eklendi`);
+      focusDiameterKeepKeyboard();
+    }
+
+    function deleteRecord(id) {
+      const rec = state.records.find(r => r.id === id);
+      if (!rec) return;
+      if (!confirm(`${rec.barcode} kaydı silinsin mi?`)) return;
+      state.records = state.records.filter(r => r.id !== id);
+      saveRecords();
+      render();
+      showToast("Kayıt silindi.");
+    }
+
+    function editRecord(id) {
+      const rec = state.records.find(r => r.id === id);
+      if (!rec) return;
+      els.barcode.value = rec.barcode;
+      els.productionDate.value = rec.productionDate || trDateToISO(rec.uretimTarihi);
+      setProductType(rec.productType || "Tomruk", true);
+      setQualityClass("", true);
+      els.length.value = rec.length;
+      els.diameter.value = rec.diameter;
+      els.quantity.value = rec.quantity || 1;
+      updateLiveDesi();
+      setEditMode(id);
+
+      document.body.classList.remove("show-records");
+      els.navEntry.classList.add("active");
+      els.navRecords.classList.remove("active");
+      focusDiameterKeepKeyboard();
+    }
+
+    function render() {
+      const query = els.searchInput.value.trim().toLowerCase();
+      const filtered = state.records.filter(r => {
+        if (!query) return true;
+        const sys = recordToSystemRow(r);
+        return [
+          r.barcode, r.productType, sys.odunAdi, r.qualityClass, r.length,
+          r.diameter, r.quantity, r.desi, r.uretimTarihi, r.createdAt
+        ].join(" ").toLowerCase().includes(query);
+      });
+
+      els.recordsBody.innerHTML = filtered.map((r) => {
+        const sys = recordToSystemRow(r);
+        return `
+          <tr class="clickable-row" onclick="editRecord('${r.id}')">
+            <td>${state.records.length - state.records.indexOf(r)}</td>
+            <td><b>${escapeHtml(r.barcode)}</b></td>
+            <td><span class="tag ${normalizeProductClass(r.productType)}">${escapeHtml(sys.odunAdi)}</span></td>
+            <td class="num">${escapeHtml(sys.boy)}</td>
+            <td class="num">${escapeHtml(sys.cap)}</td>
+            <td class="num">${escapeHtml(sys.adet)}</td>
+            <td class="num"><b>${Number(r.desi || 0).toLocaleString("tr-TR")}</b></td>
+            <td class="num">${escapeHtml(sys.hacim)}</td>
+            <td>${escapeHtml(sys.uretimTarihi)}</td>
+            <td>
+              <button class="mini-btn" onclick="event.stopPropagation(); editRecord('${r.id}')">Düzelt</button>
+              <button class="mini-btn" onclick="event.stopPropagation(); deleteRecord('${r.id}')">Sil</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      els.emptyState.style.display = filtered.length ? "none" : "block";
+      els.recordCount.textContent = `${state.records.length} kayıt`;
+
+      const totals = {
+        all: 0,
+        adet: 0,
+        Tomruk: 0,
+        TomrukAdet: 0,
+        "Maden Direk": 0,
+        MadenAdet: 0,
+        "Kağıtlık": 0,
+        KagitAdet: 0
+      };
+
+      for (const r of state.records) {
+        const qty = Number(r.quantity) || 0;
+        totals.all += Number(r.desi) || 0;
+        totals.adet += qty;
+        const key = r.productType || "Tomruk";
+        totals[key] += Number(r.desi) || 0;
+        if (key === "Tomruk") totals.TomrukAdet += qty;
+        if (key === "Maden Direk") totals.MadenAdet += qty;
+        if (key === "Kağıtlık") totals.KagitAdet += qty;
+      }
+
+      const filteredTotals = filtered.reduce((acc, r) => {
+        acc.adet += Number(r.quantity) || 0;
+        acc.desi += Number(r.desi) || 0;
+        return acc;
+      }, { adet: 0, desi: 0 });
+
+      els.totalDesi.textContent = totals.all.toLocaleString("tr-TR");
+      els.totalAdet.textContent = totals.adet.toLocaleString("tr-TR");
+      els.totalTomruk.textContent = totals.Tomruk.toLocaleString("tr-TR") + " desi";
+      if (els.totalTomrukAdet) els.totalTomrukAdet.textContent = totals.TomrukAdet.toLocaleString("tr-TR") + " adet";
+      els.totalMaden.textContent = totals["Maden Direk"].toLocaleString("tr-TR") + " desi";
+      if (els.totalMadenAdet) els.totalMadenAdet.textContent = totals.MadenAdet.toLocaleString("tr-TR") + " adet";
+      els.totalKagit.textContent = totals["Kağıtlık"].toLocaleString("tr-TR") + " desi";
+      if (els.totalKagitAdet) els.totalKagitAdet.textContent = totals.KagitAdet.toLocaleString("tr-TR") + " adet";
+
+      els.recordsFoot.innerHTML = filtered.length ? `
+        <tr class="table-total-row">
+          <td colspan="5">Alttaki liste toplamı</td>
+          <td class="num">${filteredTotals.adet.toLocaleString("tr-TR")} adet</td>
+          <td class="num">${filteredTotals.desi.toLocaleString("tr-TR")} desi</td>
+          <td class="num">${formatHacimFromDesi(filteredTotals.desi)} m³</td>
+          <td colspan="2"></td>
+        </tr>
+      ` : "";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+
+    // v12: Sistemin verdiği Mesaha_Ornek_Temp dosyasına göre gerçek BIFF8 .xls üretir.
+    // Ana Mesaha sayfasında boy, hacim ve uretimTarihi SAYI olarak yazılır.
+    const S12_GLOBAL_PREFIX_B64 = "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AAAEqyDgABQABwAAAPX/IAAAtAAAAAAAAAAErCDgABQABwAAAPX/IAAAtAAAAAAAAAAEqyDgABQABwAAAPX/IAAAtAAAAAAAAAAEsSDgABQABwAAAPX/IAAAtAAAAAAAAAAEryDgABQABwAAAPX/IAAAtAAAAAAAAAAEliDgABQABwAAAPX/IAAAtAAAAAAAAAAEqyDgABQABwAAAPX/IAAAtAAAAAAAAAAErCDgABQABwAAAPX/IAAAtAAAAAAAAAAEuSDgABQACAAAAPX/IAAA9AAAAAAAAAAAwCDgABQACQAAAPX/IAAA9AAAAAAAAAAAwCDgABQACgAAAPX/IAAA1ABgAAAAGgAAwCDgABQACwAAAPX/IAAA1ABQAAAAHwAAwCDgABQADAAAAPX/IAAA1ABQAAAAFgAAwCDgABQADQAAAPX/IAAA1AAgAACAGAAAwCDgABQADQAAAPX/IAAA9AAAAAAAAAAAwCDgABQAAQCpAPX/IAAA+AAAAAAAAAAAwCDgABQADgAAAPX/IAAAlBERvx+/HwAEliDgABQADwAAAPX/IAAAlBERlwuXCwAEryDgABQAEAAAAPX/IAAAlBERlwuXCwAEliDgABQAEQAAAPX/IAAAlGZmvx+/HwAEtyDgABQAEgAAAPX/IAAAtAAAAAAAAAAEqiDgABQAGQAAAPX/IAAA9AAAAAAAAAAAwCDgABQAGAAAAPX/IAAA9AAAAAAAAAAAwCDgABQAEwAAAPX/IAAAtAAAAAAAAAAErSDgABQABgAAAPX/IAAAnBERFgsWCwAEmiDgABQAFAAAAPX/IAAAtAAAAAAAAAAEqyDgABQAAQCqAPX/IAAA+AAAAAAAAAAAwCDgABQAAQCoAPX/IAAA+AAAAAAAAAAAwCDgABQAFQAAAPX/IAAA1ABhAAA+HwAAwCDgABQAFgAAAPX/IAAA9AAAAAAAAAAAwCDgABQAAQCrAPX/IAAA+AAAAAAAAAAAwCDgABQAFwAAAPX/IAAAtAAAAAAAAAAEviDgABQAFwAAAPX/IAAAtAAAAAAAAAAEtSDgABQAFwAAAPX/IAAAtAAAAAAAAAAEtyDgABQAFwAAAPX/IAAAtAAAAAAAAAAEsyDgABQAFwAAAPX/IAAAtAAAAAAAAAAEsSDgABQAFwAAAPX/IAAAtAAAAAAAAAAEuSDgABQAAQAJ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";
+    const S12_GLOBAL_MID_B64 = "mggYAJoIAAAAAAAAAAAAAAEAAAAAAAAAFAAAAKMIEACjCAAAAAAAAAAAAAAAAAAAjAAEAFoAWgCuAQQAAgABBBcACAABAAAAAAAAAMEBCADBAQAAJcMCAA==";
+    const S12_GLOBAL_AFTER_SST_B64 = "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";
+    const S12_SHEET1_BOF_B64 = "CQgQAAAGEABaT80HyQACAAYIAAA=";
+    const S12_SHEET1_PREFIX_B64 = "DQACAAEADAACAGQADwACAAEAEQACAAAAEAAIAPyp8dJNYlA/XwACAAEAKgACAAAAKwACAAAAggACAAEAgAAIAAAAAAAAAAAAJQIEAAAA/wCBAAIAwQQUAAAAFQAAAIMAAgAAAIQAAgAAACYACAAAAAAAAADoPycACAAAAAAAAADoPygACAAAAAAAAADwPykACAAAAAAAAADwP6EAIgABAGQAAQABAAEAAgAsASwBAAAAAAAA4D8AAAAAAADgPwEAnAgmAJwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAVQACAAgAfQAMAAAACQC2Cw8AAgAAAH0ADAAKAAoAAA4PAAIAAAB9AAwACwALALYLDwACAAAA";
+    const S12_SHEET1_TAIL_B64 = "PgISALYGAAAAAEAAAAAAAAAADwAAAIsIEACLCAAAAAAAAAAAAAAAAAoAHQAPAAMDAAgAAAABAAMAAwAICGcIFwBnCAAAAAAAAAAAAAACAAH/////A0QAAAoAAAA=";
+    const S12_SHEET2_BOF_B64 = "CQgQAAAGEABaT80HyQACAAYIAAA=";
+    const S12_SHEET2_PREFIX_B64 = "DQACAAEADAACAGQADwACAAEAEQACAAAAEAAIAPyp8dJNYlA/XwACAAEAKgACAAAAKwACAAAAggACAAEAgAAIAAAAAAAAAAAAJQIEAAAA/wCBAAIAwQQUAAAAFQAAAIMAAgAAAIQAAgAAACYACABmZmZmZmbmPycACABmZmZmZmbmPygACAAAAAAAAADoPykACAAAAAAAAADoP6EAIgAAAP8AAQABAAEABAACAAH/MzMzMzMz0z8zMzMzMzPTP0EAnAgmAJwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8MwAAAAAAAAAAVQACAAgAfQAMAAAACQC2Cw8AAgAAAH0ADAAKAAoAtg8PAAIAAAB9AAwACwALALYLDwACAAAA";
+    const S12_SHEET2_TAIL_B64 = "PgISALYAAAAAAEAAAAAAAAAADwAAAIsIEACLCAAAAAAAAAAAAAAAAAoAHQAPAAMiAAIAAAABACIAIgACAmcIFwBnCAAAAAAAAAAAAAACAAH/////A0QAAAoAAAA=";
+    const S12_SUMMARY_B64 = "/v8AAAoAAgAAAAAAAAAAAAAAAAAAAAAAAQAAAOCFn/L5T2gQq5EIACsns9kwAAAAWAAAAAQAAAABAAAAKAAAAAgAAAAwAAAADQAAAEQAAAATAAAAUAAAAAIAAADmBAAAHgAAAAwAAABIYWthbiBTRVJBWQBAAAAAgKeBetNw3AEDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==";
+    const S12_DOCSUMMARY_B64 = "/v8AAAoAAgAAAAAAAAAAAAAAAAAAAAAAAQAAAALVzdWcLhsQk5cIACss+a4wAAAAyAAAAAgAAAABAAAASAAAABcAAABQAAAACwAAAFgAAAAQAAAAYAAAABMAAABoAAAAFgAAAHAAAAANAAAAeAAAAAwAAACcAAAAAgAAAOYEAAADAAAAAAAQAAsAAAAAAAAACwAAAAAAAAALAAAAAAAAAAsAAAAAAAAAHhAAAAIAAAAHAAAATWVzYWhhAA0AAADWcm5layBNZXNhaGEADBAAAAIAAAAeAAAAEgAAAMdhbP3+bWEgU2F5ZmFsYXL9AAMAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==";
+
+    function s12BytesFromBase64(base64) {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i) & 255;
+      return bytes;
+    }
+
+    function s12Concat(parts) {
+      const total = parts.reduce((sum, p) => sum + p.length, 0);
+      const out = new Uint8Array(total);
+      let offset = 0;
+      for (const part of parts) {
+        const arr = part instanceof Uint8Array ? part : Uint8Array.from(part);
+        out.set(arr, offset);
+        offset += arr.length;
+      }
+      return out;
+    }
+
+    function s12PushU16(arr, value) {
+      arr.push(Number(value) & 255, (Number(value) >>> 8) & 255);
+    }
+
+    function s12PushU32(arr, value) {
+      const v = Number(value) >>> 0;
+      arr.push(v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255);
+    }
+
+    function s12PushF64(arr, value) {
+      const buffer = new ArrayBuffer(8);
+      const view = new DataView(buffer);
+      view.setFloat64(0, Number(value) || 0, true);
+      arr.push(...new Uint8Array(buffer));
+    }
+
+    function s12WriteU16(bytes, offset, value) {
+      new DataView(bytes.buffer).setUint16(offset, Number(value) & 65535, true);
+    }
+
+    function s12WriteU32(bytes, offset, value) {
+      new DataView(bytes.buffer).setUint32(offset, Number(value) >>> 0, true);
+    }
+
+    function s12BiffRecord(opcode, data) {
+      const d = data instanceof Uint8Array ? Array.from(data) : data;
+      const out = [];
+      s12PushU16(out, opcode);
+      s12PushU16(out, d.length);
+      out.push(...d);
+      return Uint8Array.from(out);
+    }
+
+    function s12BoundSheet(offset, sheetName) {
+      const name = String(sheetName || "Mesaha");
+      const d = [];
+      s12PushU32(d, offset);
+      d.push(0);
+      d.push(0);
+
+      let canCompress = true;
+      for (let i = 0; i < name.length; i++) {
+        if (name.charCodeAt(i) > 255) {
+          canCompress = false;
+          break;
+        }
+      }
+
+      d.push(name.length);
+      d.push(canCompress ? 0 : 1);
+
+      if (canCompress) {
+        for (let i = 0; i < name.length; i++) d.push(name.charCodeAt(i) & 255);
+      } else {
+        for (let i = 0; i < name.length; i++) {
+          const code = name.charCodeAt(i);
+          d.push(code & 255, (code >>> 8) & 255);
+        }
+      }
+
+      return s12BiffRecord(0x0085, d);
+    }
+
+    function s12XlStringBytes(value) {
+      const s = String(value ?? "");
+      const d = [];
+      s12PushU16(d, s.length);
+
+      let canCompress = true;
+      for (let i = 0; i < s.length; i++) {
+        if (s.charCodeAt(i) > 255) {
+          canCompress = false;
+          break;
+        }
+      }
+
+      d.push(canCompress ? 0 : 1);
+
+      if (canCompress) {
+        for (let i = 0; i < s.length; i++) d.push(s.charCodeAt(i) & 255);
+      } else {
+        for (let i = 0; i < s.length; i++) {
+          const code = s.charCodeAt(i);
+          d.push(code & 255, (code >>> 8) & 255);
+        }
+      }
+
+      return d;
+    }
+
+    function s12MakeSst(items) {
+      const occurrences = [];
+
+      for (const item of items) {
+        for (let r = 0; r < item.rows.length; r++) {
+          for (let c = 0; c < item.rows[r].length; c++) {
+            const value = item.rows[r][c];
+            if (item.types[r][c] === "str" && value !== "" && value !== null && value !== undefined) {
+              occurrences.push(String(value));
+            }
+          }
+        }
+      }
+
+      const unique = [];
+      const index = new Map();
+
+      for (const s of occurrences) {
+        if (!index.has(s)) {
+          index.set(s, unique.length);
+          unique.push(s);
+        }
+      }
+
+      const payload = [];
+      s12PushU32(payload, occurrences.length);
+      s12PushU32(payload, unique.length);
+
+      for (const s of unique) {
+        payload.push(...s12XlStringBytes(s));
+      }
+
+      return {
+        bytes: s12BiffRecord(0x00FC, payload),
+        index
+      };
+    }
+
+    function s12Dimensions(rowCount) {
+      const d = [];
+      s12PushU32(d, 0);
+      s12PushU32(d, rowCount);
+      s12PushU16(d, 0);
+      s12PushU16(d, 12);
+      s12PushU16(d, 0);
+      return s12BiffRecord(0x0200, d);
+    }
+
+    function s12Row(rowIndex) {
+      const d = [];
+      s12PushU16(d, rowIndex);
+      s12PushU16(d, 0);
+      s12PushU16(d, 12);
+      s12PushU16(d, 0x00FF);
+      s12PushU16(d, 0);
+      s12PushU16(d, 0);
+      s12PushU16(d, 0x0F01);
+      s12PushU16(d, 0);
+      return s12BiffRecord(0x0208, d);
+    }
+
+    function s12LabelSst(row, col, sstIndex, xfIndex) {
+      const d = [];
+      s12PushU16(d, row);
+      s12PushU16(d, col);
+      s12PushU16(d, xfIndex);
+      s12PushU32(d, sstIndex);
+      return s12BiffRecord(0x00FD, d);
+    }
+
+    function s12Number(row, col, value, xfIndex) {
+      const d = [];
+      s12PushU16(d, row);
+      s12PushU16(d, col);
+      s12PushU16(d, xfIndex);
+      s12PushF64(d, Number(value) || 0);
+      return s12BiffRecord(0x0203, d);
+    }
+
+    function s12Index(rowCount, dbCellPositions) {
+      const d = [];
+      s12PushU32(d, 0);
+      s12PushU32(d, 0);
+      s12PushU32(d, rowCount);
+      s12PushU32(d, 0);
+      for (const pos of dbCellPositions) s12PushU32(d, pos);
+      return s12BiffRecord(0x020B, d);
+    }
+
+    function s12DbCell(dbCellAbsPos, firstRowAbsPos, firstCellAbsPositions) {
+      const d = [];
+      s12PushU32(d, dbCellAbsPos - firstRowAbsPos);
+      let previous = firstRowAbsPos + 20;
+
+      for (const cellPos of firstCellAbsPositions) {
+        s12PushU16(d, cellPos - previous);
+        previous = cellPos;
+      }
+
+      return s12BiffRecord(0x00D7, d);
+    }
+
+    function s12MakeSheet(rows, types, sheetOffset, bofBytes, prefixAfterIndexBytes, tailBytes, sstIndex) {
+      const parts = [];
+      let absolutePos = sheetOffset;
+
+      parts.push(bofBytes);
+      absolutePos += bofBytes.length;
+
+      const indexPartIndex = parts.length;
+      const indexPlaceholder = s12Index(rows.length, []);
+      parts.push(indexPlaceholder);
+      absolutePos += indexPlaceholder.length;
+
+      parts.push(prefixAfterIndexBytes);
+      absolutePos += prefixAfterIndexBytes.length;
+
+      const dim = s12Dimensions(rows.length);
+      parts.push(dim);
+      absolutePos += dim.length;
+
+      const dbCellPositions = [];
+
+      for (let startRow = 0; startRow < rows.length; startRow += 32) {
+        const endRow = Math.min(startRow + 32, rows.length);
+        const firstRowAbsPos = absolutePos;
+
+        for (let r = startRow; r < endRow; r++) {
+          const rowRecord = s12Row(r);
+          parts.push(rowRecord);
+          absolutePos += rowRecord.length;
+        }
+
+        const firstCellPositions = [];
+
+        for (let r = startRow; r < endRow; r++) {
+          firstCellPositions.push(absolutePos);
+          const xf = r === 0 ? 64 : 15;
+
+          for (let c = 0; c < rows[r].length; c++) {
+            const value = rows[r][c];
+            const type = types[r][c];
+
+            if (value === "" || value === null || value === undefined || type === "blank") {
+              continue;
+            }
+
+            let cell;
+            if (type === "str") {
+              cell = s12LabelSst(r, c, sstIndex.get(String(value)), xf);
+            } else {
+              cell = s12Number(r, c, Number(value) || 0, xf);
+            }
+
+            parts.push(cell);
+            absolutePos += cell.length;
+          }
+        }
+
+        const dbCellAbsPos = absolutePos;
+        dbCellPositions.push(dbCellAbsPos);
+        const dbCell = s12DbCell(dbCellAbsPos, firstRowAbsPos, firstCellPositions);
+        parts.push(dbCell);
+        absolutePos += dbCell.length;
+      }
+
+      parts[indexPartIndex] = s12Index(rows.length, dbCellPositions);
+      parts.push(tailBytes);
+      return s12Concat(parts);
+    }
+
+    function s12ExcelSerialFromISO(isoDate) {
+      const iso = isoDate || todayISO();
+      const parts = String(iso).split("-");
+      if (parts.length !== 3) return s12ExcelSerialFromISO(todayISO());
+
+      const y = Number(parts[0]);
+      const m = Number(parts[1]);
+      const d = Number(parts[2]);
+      const utc = Date.UTC(y, m - 1, d);
+      const base = Date.UTC(1899, 11, 30);
+      return Math.round((utc - base) / 86400000);
+    }
+
+    function s12RecordToRow(record) {
+      const product = PRODUCT_MAP[record.productType] || PRODUCT_MAP["Tomruk"];
+      const desi = Number(record.desi) || calculateDesi(record.diameter, record.length, record.quantity);
+      const hacim = "";
+      const kalite = "";
+
+      return [
+        1,
+        "Karaçam",
+        product.odunId,
+        product.odunAdi,
+        kalite,
+        "",
+        Number(record.quantity || 1),
+        Number(record.diameter || 0),
+        Number(record.length || 0),
+        hacim,
+        isoToTRDate(record.productionDate || trDateToISO(record.uretimTarihi) || todayISO()),
+        record.barcode || ""
+      ];
+    }
+
+    function s12MainTypes(rows) {
+      return rows.map((row, r) => {
+        if (r === 0) return row.map(() => "str");
+
+        return row.map((value, c) => {
+          if (value === "" || value === null || value === undefined) return "blank";
+          // Tomrukta kaliteSinifi sistem tarafından sayı gibi bekleniyor olabilir.
+          // Bu yüzden kaliteSinifi doluysa sayı, tarih ise 03.06.2026 şeklinde metin gider.
+          return [1, 3, 5, 10, 11].includes(c) ? "str" : "num";
+        });
+      });
+    }
+
+    function s12ExampleRowsAndTypes() {
+      const rows = [
+        HEADERS,
+        [11, "Kayın", 3, "Maden Direği", "", "", 1, 20, "4.0", "0.126", "28.07.2025", "A123456789"],
+        [11, "Kayın", 1, "Tomruk", "1", "", 1, 20, "10.0", "0.314", "28.07.2025", "A987654321"]
+      ];
+
+      const types = rows.map((row, r) => {
+        if (r === 0) return row.map(() => "str");
+
+        return row.map((value, c) => {
+          if (value === "" || value === null || value === undefined) return "blank";
+          return [1, 3, 4, 5, 8, 9, 10, 11].includes(c) ? "str" : "num";
+        });
+      });
+
+      return { rows, types };
+    }
+
+    function s12Utf16Bytes(value) {
+      const s = String(value || "") + "\u0000";
+      const arr = [];
+      for (let i = 0; i < s.length; i++) {
+        const code = s.charCodeAt(i);
+        arr.push(code & 255, (code >>> 8) & 255);
+      }
+      return arr;
+    }
+
+    function s12DirectoryEntry(name, type, color, left, right, child, startSector, streamSize) {
+      const bytes = new Uint8Array(128);
+      const nameBytes = s12Utf16Bytes(name).slice(0, 64);
+      bytes.set(Uint8Array.from(nameBytes), 0);
+      s12WriteU16(bytes, 64, Math.min(nameBytes.length, 64));
+      bytes[66] = type;
+      bytes[67] = color;
+      s12WriteU32(bytes, 68, left);
+      s12WriteU32(bytes, 72, right);
+      s12WriteU32(bytes, 76, child);
+      s12WriteU32(bytes, 116, startSector);
+      s12WriteU32(bytes, 120, streamSize >>> 0);
+      s12WriteU32(bytes, 124, Math.floor(streamSize / 0x100000000));
+      return bytes;
+    }
+
+    function s12MakeCfb(streams) {
+      const FREESECT = 0xFFFFFFFF;
+      const ENDOFCHAIN = 0xFFFFFFFE;
+      const FATSECT = 0xFFFFFFFD;
+      const NOSTREAM = 0xFFFFFFFF;
+      const sectorSize = 512;
+
+      const sectorCounts = streams.map(s => Math.ceil(s.data.length / sectorSize));
+      const directorySectorCount = 1;
+      let fatSectorCount = 1;
+
+      while (true) {
+        const totalSectors = fatSectorCount + directorySectorCount + sectorCounts.reduce((a, b) => a + b, 0);
+        const neededFatSectors = Math.ceil(totalSectors / 128);
+        if (neededFatSectors === fatSectorCount) break;
+        fatSectorCount = neededFatSectors;
+      }
+
+      const directorySector = fatSectorCount;
+      let nextSector = fatSectorCount + directorySectorCount;
+      const starts = sectorCounts.map(count => {
+        const start = nextSector;
+        nextSector += count;
+        return start;
+      });
+      const totalSectors = nextSector;
+
+      const header = new Uint8Array(512);
+      header.set(Uint8Array.from([0xD0,0xCF,0x11,0xE0,0xA1,0xB1,0x1A,0xE1]), 0);
+      s12WriteU16(header, 24, 0x003E);
+      s12WriteU16(header, 26, 0x0003);
+      s12WriteU16(header, 28, 0xFFFE);
+      s12WriteU16(header, 30, 9);
+      s12WriteU16(header, 32, 6);
+      s12WriteU32(header, 40, 0);
+      s12WriteU32(header, 44, fatSectorCount);
+      s12WriteU32(header, 48, directorySector);
+      s12WriteU32(header, 52, 0);
+      s12WriteU32(header, 56, 4096);
+      s12WriteU32(header, 60, ENDOFCHAIN);
+      s12WriteU32(header, 64, 0);
+      s12WriteU32(header, 68, ENDOFCHAIN);
+      s12WriteU32(header, 72, 0);
+
+      for (let i = 0; i < 109; i++) {
+        s12WriteU32(header, 76 + i * 4, i < fatSectorCount ? i : FREESECT);
+      }
+
+      const fat = new Uint8Array(fatSectorCount * sectorSize);
+      for (let i = 0; i < fatSectorCount * 128; i++) {
+        let value = FREESECT;
+        if (i < totalSectors) {
+          if (i < fatSectorCount) value = FATSECT;
+          else if (i === directorySector) value = ENDOFCHAIN;
+          else {
+            value = ENDOFCHAIN;
+            for (let s = 0; s < streams.length; s++) {
+              const start = starts[s];
+              const count = sectorCounts[s];
+              if (i >= start && i < start + count) {
+                value = i < start + count - 1 ? i + 1 : ENDOFCHAIN;
+                break;
+              }
+            }
+          }
+        }
+        s12WriteU32(fat, i * 4, value);
+      }
+
+      const entries = [];
+      entries.push(s12DirectoryEntry("Root Entry", 5, 1, NOSTREAM, NOSTREAM, 1, ENDOFCHAIN, 0));
+
+      for (let i = 0; i < streams.length; i++) {
+        const right = i < streams.length - 1 ? i + 2 : NOSTREAM;
+        entries.push(s12DirectoryEntry(streams[i].name, 2, 1, NOSTREAM, right, NOSTREAM, starts[i], streams[i].data.length));
+      }
+
+      while (entries.length < 4) {
+        entries.push(s12DirectoryEntry("", 0, 0, NOSTREAM, NOSTREAM, NOSTREAM, ENDOFCHAIN, 0));
+      }
+
+      let directory = s12Concat(entries);
+      if (directory.length < sectorSize) {
+        const padded = new Uint8Array(sectorSize);
+        padded.set(directory, 0);
+        directory = padded;
+      }
+
+      const streamBytes = streams.map((s, i) => {
+        const padded = new Uint8Array(sectorCounts[i] * sectorSize);
+        padded.set(s.data, 0);
+        return padded;
+      });
+
+      return s12Concat([header, fat, directory, ...streamBytes]);
+    }
+
+    function s12MakeWorkbook(dataRows) {
+      const mainRows = [HEADERS, ...dataRows];
+      const mainTypes = s12MainTypes(mainRows);
+      const example = s12ExampleRowsAndTypes();
+
+      const sst = s12MakeSst([
+        { rows: mainRows, types: mainTypes },
+        { rows: example.rows, types: example.types }
+      ]);
+
+      const globalPrefix = s12BytesFromBase64(S12_GLOBAL_PREFIX_B64);
+      const globalMid = s12BytesFromBase64(S12_GLOBAL_MID_B64);
+      const globalAfterSst = s12BytesFromBase64(S12_GLOBAL_AFTER_SST_B64);
+
+      const bof1 = s12BytesFromBase64(S12_SHEET1_BOF_B64);
+      const prefix1 = s12BytesFromBase64(S12_SHEET1_PREFIX_B64);
+      const tail1 = s12BytesFromBase64(S12_SHEET1_TAIL_B64);
+      const bof2 = s12BytesFromBase64(S12_SHEET2_BOF_B64);
+      const prefix2 = s12BytesFromBase64(S12_SHEET2_PREFIX_B64);
+      const tail2 = s12BytesFromBase64(S12_SHEET2_TAIL_B64);
+
+      const b1 = s12BoundSheet(0, "Mesaha");
+      const b2 = s12BoundSheet(0, "Örnek Mesaha");
+
+      const globalLength =
+        globalPrefix.length +
+        b1.length +
+        b2.length +
+        globalMid.length +
+        sst.bytes.length +
+        globalAfterSst.length;
+
+      const sheet1Offset = globalLength;
+      const sheet1 = s12MakeSheet(mainRows, mainTypes, sheet1Offset, bof1, prefix1, tail1, sst.index);
+      const sheet2Offset = sheet1Offset + sheet1.length;
+      const sheet2 = s12MakeSheet(example.rows, example.types, sheet2Offset, bof2, prefix2, tail2, sst.index);
+
+      const globals = s12Concat([
+        globalPrefix,
+        s12BoundSheet(sheet1Offset, "Mesaha"),
+        s12BoundSheet(sheet2Offset, "Örnek Mesaha"),
+        globalMid,
+        sst.bytes,
+        globalAfterSst
+      ]);
+
+      return s12Concat([globals, sheet1, sheet2]);
+    }
+
+    function s12MakeSystemXls(dataRows) {
+      const workbook = s12MakeWorkbook(dataRows);
+      return s12MakeCfb([
+        { name: "Workbook", data: workbook },
+        { name: "\u0005SummaryInformation", data: s12BytesFromBase64(S12_SUMMARY_B64) },
+        { name: "\u0005DocumentSummaryInformation", data: s12BytesFromBase64(S12_DOCSUMMARY_B64) }
+      ]);
+    }
+
+    function s12DownloadBytes(bytes, filename) {
+      const blob = new Blob([bytes], { type: "application/vnd.ms-excel" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+
+    function xmlEscape(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function exportSystemXls() {
+      if (!state.records.length) return showToast("Çıktı için kayıt yok.");
+
+      const ordered = state.records.slice().reverse().map(s12RecordToRow);
+      const xlsBytes = s12MakeSystemXls(ordered);
+      s12DownloadBytes(xlsBytes, `Mesaha_${dateFileName()}.xls`);
+      showToast("Barkod kontrollü, hacim boş sistem Excel indirildi.");
+    }
+
+    function exportCsv() {
+      if (!state.records.length) return showToast("Çıktı için kayıt yok.");
+
+      const ordered = state.records.slice().reverse().map(recordToSystemRow);
+      const rows = [
+        HEADERS,
+        ...ordered.map(r => HEADERS.map(h => r[h]))
+      ];
+
+      const csv = rows.map(row => row.map(csvCell).join(";")).join("\n");
+      downloadFile("\uFEFF" + csv, `Mesaha_${dateFileName()}.csv`, "text/csv;charset=utf-8");
+      showToast("CSV çıktısı indirildi.");
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? "");
+      return `"${text.replaceAll('"', '""')}"`;
+    }
+
+    function backup() {
+      const data = {
+        app: "Mesaha App",
+        version: 28,
+        exportedAt: formatDateTime(),
+        systemHeaders: HEADERS,
+        settings: state.settings,
+        records: state.records
+      };
+      downloadFile(JSON.stringify(data, null, 2), `cam_mesaha_yedek_${dateFileName()}.json`, "application/json");
+      showToast("Yedek indirildi.");
+    }
+
+    function restoreFromFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          if (!Array.isArray(data.records)) throw new Error("Geçersiz yedek.");
+          if (!confirm(`${data.records.length} kayıt yüklensin mi? Mevcut kayıtlar değişir.`)) return;
+
+          state.records = data.records;
+          state.settings = { ...state.settings, ...(data.settings || {}) };
+          saveRecords();
+          localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+          load();
+          showToast("Yedek yüklendi.");
+        } catch (err) {
+          showToast("Yedek dosyası okunamadı.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function dateFileName() {
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
+    }
+
+    function buildChips() {
+      renderRecentChips();
+    }
+
+    els.submitBtn.addEventListener("pointerdown", (event) => {
+      // Mobilde butona dokununca input blur olup klavye kapanmasın diye butonun odağı almasını engelliyoruz.
+      event.preventDefault();
+      if (els.form.requestSubmit) els.form.requestSubmit();
+      else els.form.dispatchEvent(new Event("submit", { cancelable: true }));
+    });
+
+    els.form.addEventListener("submit", addRecord);
+
+    ["input", "change"].forEach(evt => {
+      els.diameter.addEventListener(evt, updateLiveDesi);
+      els.length.addEventListener(evt, () => { saveSettings(); updateLiveDesi(); });
+      els.quantity.addEventListener(evt, () => { saveSettings(); updateLiveDesi(); });
+      els.productionDate.addEventListener(evt, saveSettings);
+      els.barcode.addEventListener(evt, saveSettings);
+    });
+
+    els.productBoxes.querySelectorAll(".product-box").forEach(box => {
+      box.addEventListener("pointerdown", (event) => event.preventDefault());
+      box.addEventListener("click", () => setProductType(box.dataset.product, true));
+    });
+
+    els.classBoxes.querySelectorAll(".class-box").forEach(box => {
+      box.addEventListener("pointerdown", (event) => event.preventDefault());
+      box.addEventListener("click", () => setQualityClass(box.dataset.class, true));
+    });
+
+    els.cancelEditBtn.addEventListener("click", cancelEditMode);
+    if (els.soundToggleBtn) els.soundToggleBtn.addEventListener("click", toggleSound);
+
+    els.sameBarcodeBtn.addEventListener("click", () => {
+      state.sameBarcodeMode = !state.sameBarcodeMode;
+      els.sameBarcodeBtn.textContent = state.sameBarcodeMode ? "Aynı Barkod Modu: Açık" : "Aynı Barkoda Ürün Ekle";
+      els.sameBarcodeBtn.classList.toggle("warning", state.sameBarcodeMode);
+      els.sameBarcodeBtn.classList.toggle("secondary", !state.sameBarcodeMode);
+      showToast(state.sameBarcodeMode ? "Kaydetten sonra barkod artmayacak." : "Kaydetten sonra barkod artacak.");
+    });
+
+    els.clearInputsBtn.addEventListener("click", () => {
+      if (!confirm("Giriş alanları temizlensin mi?")) return;
+      els.diameter.value = "";
+      els.quantity.value = "1";
+      updateLiveDesi();
+      focusDiameterKeepKeyboard();
+    });
+
+    els.searchInput.addEventListener("input", render);
+    els.exportSystemXlsBtn.addEventListener("click", exportSystemXls);
+    els.backupBtn.addEventListener("click", backup);
+    els.restoreBtn.addEventListener("click", () => els.restoreInput.click());
+    els.restoreInput.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) restoreFromFile(file);
+      e.target.value = "";
+    });
+    els.printBtn.addEventListener("click", () => window.print());
+
+    els.deleteAllBtn.addEventListener("click", () => {
+      if (!state.records.length) return showToast("Silinecek kayıt yok.");
+      if (!confirm("Tüm kayıtlar silinsin mi? Bu işlem geri alınamaz.")) return;
+      state.records = [];
+      saveRecords();
+      render();
+      showToast("Tüm kayıtlar silindi.");
+    });
+
+    els.navEntry.addEventListener("click", () => {
+      document.body.classList.remove("show-records");
+      els.navEntry.classList.add("active");
+      els.navRecords.classList.remove("active");
+      focusDiameterKeepKeyboard();
+    });
+
+    els.navRecords.addEventListener("click", () => {
+      document.body.classList.add("show-records");
+      els.navRecords.classList.add("active");
+      els.navEntry.classList.remove("active");
+    });
+
+    window.deleteRecord = deleteRecord;
+    window.editRecord = editRecord;
+
+    load();
+  </script>
+</body>
+</html>
